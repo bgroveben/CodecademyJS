@@ -7,32 +7,57 @@ Here’s the strategy:
 Rotate the alphabet by 13
 Make a replacement rule
 Replace all characters
-Let’s start with no. 1, shall we?
 */
-/*
-* Reference implementation (Course Author's own solution)
-* for "Method Chaining and ROT13", Section 2, Exercise 5
-* http://is.gd/olbv94
-*
-* The idea is really simple:
-* 1. find the new cutting point (simulate "rotating")
-* 2. return all the caracters to the right of the cutting point
-*    followed by those to the left of it.
-*
-* Positive values count cut position from the right,
-* negative values count them from the left.
-*
-* Example: " h e l l o ".rotate(2) // 2 steps from the right
-*                 ^
-*                 return "lo" + "hel"
-*/
-String.prototype.rotate = function(n) { // n is an integer
-    n %= this.length; // too large numbers: modulo
-    var cut = n < 0 ? -n : this.length - n; // cutting point
-    return this.substr(cut) + this.substr(0,cut);
+// This is from stringRotation.js:
+String.prototype.rotate = function(number) {
+  var howFar = number % this.length;
+  var plusOrMinus;
+  if (howFar > 0) {
+    plusOrMinus = this.length - howFar;
+  } else {
+    plusOrMinus = -howFar;
+  }
+  var firstSlice = this.substring(plusOrMinus, this.length);
+  var secondSlice = this.substring(0, plusOrMinus);
+  return firstSlice + secondSlice;
 };
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 // Now use it:
 console.log(alphabet.rotate(13));
 console.log(alphabet.rotate(13).rotate(13));
+console.log();
+
+/*
+For the character substitution, we're going to use a dictionary (known in JS as an associative array)
+to represent the lookup table.
+*/
+// Make an array of characters (upper and lower case) from A-z:
+var firstArray = (alphabet + alphabet.toLowerCase()).split('');
+console.log(firstArray);
+// Make an array of characters from N to m:
+var secondArray = (alphabet.rotate(13) + alphabet.rotate(13).toLowerCase()).split('');
+console.log(secondArray);
+/*
+// Initialize an empty dictionary:
+var rot13_dict = {};
+
+Now, make an associative array with the characters from firstArray as the keys and the characters from
+secondArray as the values.
+
+// iterative using a for loop
+for (var i = 0; i < firstArray.length; i++) {
+  rot13_dict[firstArray[i]] = secondArray[i];
+}
+console.log(rot13_dict);
+console.log();
+*/
+// iterative using forEach
+function arrToObj(keys, values) {
+  var rot13_dict = {};
+  keys.forEach(function (key, index) {
+    rot13_dict[key] = values[index];
+  });
+  return rot13_dict;
+}
+console.log(arrToObj(firstArray, secondArray));
 console.log();

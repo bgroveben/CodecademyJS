@@ -37,3 +37,26 @@ console.log("outab".rotate(22));       // "about"
 // (actually the same as "outab".rotate(2); )
 console.log("otypesprot".rotate(-36)); // "prototypes"
 // (actually the same as "otypesprot".rotate(-6); )
+
+/*
+* Reference implementation (Course Author's own solution)
+* for "Method Chaining and ROT13", Section 2, Exercise 5
+* http://is.gd/olbv94
+*
+* The idea is really simple:
+* 1. find the new cutting point (simulate "rotating")
+* 2. return all the caracters to the right of the cutting point
+*    followed by those to the left of it.
+*
+* Positive values count cut position from the right,
+* negative values count them from the left.
+*
+* Example: " h e l l o ".rotate(2) // 2 steps from the right
+*                 ^
+*                 return "lo" + "hel"
+*/
+String.prototype.rotate = function(n) { // n is an integer
+    n %= this.length; // too large numbers: modulo
+    var cut = n < 0 ? -n : this.length - n; // cutting point
+    return this.substr(cut) + this.substr(0,cut);
+};
